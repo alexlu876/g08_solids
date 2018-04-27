@@ -73,17 +73,17 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
   float yb;
   float zb;
 
-  int x0 = points->m[0][i * 3];
-  int y0 = points->m[1][i * 3];
-  int z0 = points->m[2][i * 3];
+  int x0 = points->m[0][i];
+  int y0 = points->m[1][i];
+  int z0 = points->m[2][i];
   
-  int x1 = points->m[0][i * 3 + 1];
-  int y1 = points->m[1][i * 3 + 1];
-  int z1 = points->m[2][i * 3 + 1];
+  int x1 = points->m[0][i + 1];
+  int y1 = points->m[1][i + 1];
+  int z1 = points->m[2][i + 1];
 
-  int x2 = points->m[0][i * 3 + 2];
-  int y2 = points->m[1][i * 3 + 2];
-  int z2 = points->m[2][i * 3 + 2];
+  int x2 = points->m[0][i + 2];
+  int y2 = points->m[1][i + 2];
+  int z2 = points->m[2][i + 2];
 
   if (y0 == max(y0, y1, y2)) {
     yt = y0;
@@ -132,13 +132,14 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
   double d_z1;
   double d_z2a;
   double d_z2b;
+
   if(yt - yb != 0){
     d_x1 = (xt - xb) / (yt - yb);
     d_z1 = (zt - zb) / (yt - yb);
   }
   else{
-    d_x1 = 19000000;
-    d_z1 = 1000000;
+    d_x1 = 10000000;
+    d_z1 = 10000000;
   }
   
   if(ym - yb != 0){
@@ -156,7 +157,7 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
   }
   else{
     d_x2b = 100000000;
-    d_z2b = 10000000;
+    d_z2b = 100000000;
   }
   int j;
   for(j = yb; j < yt; j++){
