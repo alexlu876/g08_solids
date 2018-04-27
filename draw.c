@@ -8,6 +8,43 @@
 #include "math.h"
 #include "gmath.h"
 
+int max(int a, int b, int c){
+  /* this is wrong lmao
+  if(a > b){
+    if(a > c){
+      return a;
+    }
+    else{
+      return c;
+    }
+  }
+  else{
+    if(b > c){
+      return b;
+    }
+    else{
+      return c;
+    }
+  }
+  */
+  if(a > b && a > c){
+    return a;
+  }
+  else if(b > c){
+    return b;
+  }
+  return c;
+}
+
+int min(int a, int b, int c){
+  if(a < b && a < c){
+    return a;
+  }
+  else if(b < c){
+    return b;
+  }
+  return c;
+}
 /*======== void scanline_convert() ==========
   Inputs: struct matrix *points
           int i
@@ -21,6 +58,34 @@
   ====================*/
 void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
 
+  color c;
+  c.red = (i * 30) % 255;
+  c.blue = (i * 30 + 15) % 255;
+  c.green = (i * 30 + 45) % 255;
+
+  float xt;
+  float yt;
+  float zt;
+  float xm;
+  float ym;
+  float zm;
+  float xb;
+  float yb;
+  float zb;
+
+  int x0 = points->m[0][i * 3];
+  int y0 = points->m[1][i * 3];
+  int z0 = points->m[2][i * 3];
+  
+  int x1 = points->m[0][i * 3 + 1];
+  int y1 = points->m[1][i * 3 + 1];
+  int z1 = points->m[2][i * 3 + 1];
+
+  int x2 = points->m[0][i * 3 + 2];
+  int y2 = points->m[1][i * 3 + 2];
+  int z2 = points->m[2][i * 3 + 2];
+
+  
 }
 
 /*======== void add_polygon() ==========
@@ -72,6 +137,8 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb, color c ) {
     normal = calculate_normal(polygons, point);
 
     if ( normal[2] > 0 ) {
+
+      scanline_convert(polygons, point / 3, s, zb);
 
       draw_line( polygons->m[0][point],
                  polygons->m[1][point],
