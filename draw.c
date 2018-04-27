@@ -56,7 +56,7 @@ int min(int a, int b, int c){
 
   Color should be set differently for each polygon.
   ====================*/
-void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
+void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
 
   color c;
   c.red = (i * 30) % 255;
@@ -126,55 +126,58 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
   zm = z0 + z1 + z2 - zb - zt;
   
 
-  float dx1, dx2a, dx2b;
-  float dz1, dz2a, dz2b;
+  double d_x1;
+  double d_x2a;
+  double d_x2b;
+  double d_z1;
+  double d_z2a;
+  double d_z2b;
   if(yt - yb != 0){
-    dx1 = (xt - xb) / (yt - yb);
-    dz1 = (zt - zb) / (yt - yb);
+    d_x1 = (xt - xb) / (yt - yb);
+    d_z1 = (zt - zb) / (yt - yb);
   }
   else{
-    dx1 = 19000000;
-    dz1 = 1000000;
+    d_x1 = 19000000;
+    d_z1 = 1000000;
   }
   
   if(ym - yb != 0){
-    dx2a = (xm - xb) / (ym - yb);
-    dz2a = (zm - zb) / (ym - yb);
+    d_x2a = (xm - xb) / (ym - yb);
+    d_z2a = (zm - zb) / (ym - yb);
   }
   else{
-    dx2a = 10000000;
-    dz2a = 10000000;
+    d_x2a = 10000000;
+    d_z2a = 10000000;
   }
   
   if(yt - ym != 0){
-    dx2b = (xt - xm) / (yt - ym);
-    dz2b = (zt - zm) / (yt - ym);
+    d_x2b = (xt - xm) / (yt - ym);
+    d_z2b = (zt - zm) / (yt - ym);
   }
   else{
-    dx2b = 100000000;
-    dz2b = 10000000;
+    d_x2b = 100000000;
+    d_z2b = 10000000;
   }
   int j;
   for(j = yb; j < yt; j++){
 
     
     if(i < ym){
-      draw_line( (i - yb) * dx1 + xb,
+      draw_line( (i - yb) * d_x1 + xb,
 		 i,
-		 (i - yb) * dz1 + zb,
-		 (i - yb) * dx2a + xb,
+		 (i - yb) * d_z1 + zb,
+		 (i - yb) * d_x2a + xb,
 		 i,
-		 (i - yb) * dz2a + zb,
-		 s, zb, c);
+		 (i - yb) * d_z2a + zb,
+		 s, zbu, c);
     }
     else{
-      draw_line( (i - yb) * dx1 + xb,
+      draw_line( (i - yb) * d_x1 + xb, i,
+		 (i - yb) * d_z1 + zb,
+		 (i - ym) * d_x2b + xm,
 		 i,
-		 (i - yb) * dz1 + zb,
-		 (i - ym) * dx2b + xm,
-		 i,
-		 (i - ym) * dz2b + zm,
-		 s, zb, c);
+		 (i - ym) * d_z2b + zm,
+		 s, zbu, c);
     }
   }
 }
