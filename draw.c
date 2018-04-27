@@ -202,24 +202,24 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbuf ) {
   */
   float x0 = xb;
   float x1 = x0;
-  float y;
+  int y;
   float z0 = zb;
   float z1 = z0;
   for (y = yb; y < ym; y ++) {
-	draw_line(x0, y, z0, x1, y, z1, s, zbuf, c);
-	x0 += (xt - xb) / (yt - yb);
-	z0 += (zt - zb) / (yt - yb);
-	x1 += (xm - xb) / (ym - yb);
-	z1 += (zm - zb) / (ym - yb);
+  	draw_line(x0, y, z0, x1, y, z1, s, zbuf, c);
+  	x0 += (xt - xb) / (yt - yb);
+  	z0 += (zt - zb) / (yt - yb);
+  	x1 += (xm - xb) / (ym - yb);
+  	z1 += (zm - zb) / (ym - yb);
   }
   x1 = xm;
   z1 = zm;
   for (y = ym; y < yt; y ++) {
-	draw_line(x0, y, z0, x1, y, z1, s, zbuf, c);
-	x0 += (xt - xb) / (yt - yb);
-	z0 += (zt - zb) / (yt - yb);
-	x1 += (xt - xm) / (yt - ym);
-	z1 += (zt - zm) / (yt - ym);
+  	draw_line(x0, y, z0, x1, y, z1, s, zbuf, c);
+  	x0 += (xt - xb) / (yt - yb);
+  	z0 += (zt - zb) / (yt - yb);
+  	x1 += (xt - xm) / (yt - ym);
+  	z1 += (zt - zm) / (yt - ym);
   }
 }
 
@@ -273,7 +273,7 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb, color c ) {
 
     if ( normal[2] > 0 ) {
 
-      scanline_convert(polygons, point / 3, s, zb);
+      scanline_convert(polygons, point, s, zb);
 
       draw_line( polygons->m[0][point],
                  polygons->m[1][point],
