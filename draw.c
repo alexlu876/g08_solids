@@ -56,7 +56,7 @@ int min(int a, int b, int c){
 
   Color should be set differently for each polygon.
   ====================*/
-void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
+void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbuf ) {
 
   color c;
   c.red = (i * 30) % 255;
@@ -66,17 +66,17 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
   int mid = bot + 1;
   int top = bot + 2;
   int temp;
-  if (points->m[1][b] > points->m[1][m]) {
+  if (points->m[1][bot] > points->m[1][mid]) {
 	temp = bot;
 	bot = mid;
 	mid = temp;
   }
-  if (points->m[1][b] > points->m[1][t]) {
+  if (points->m[1][bot] > points->m[1][top]) {
 	temp = bot;
 	bot = top;
 	top = temp;
   }
-  if (points->m[1][m] > points->m[1][t]) {
+  if (points->m[1][mid] > points->m[1][top]) {
 	temp = mid;
 	mid = top;
 	top = temp;
