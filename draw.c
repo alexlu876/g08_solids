@@ -62,7 +62,25 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
   c.red = (i * 30) % 255;
   c.blue = (i * 30 + 15) % 255;
   c.green = (i * 30 + 45) % 255;
-
+  int bot = i;
+  int mid = bot + 1;
+  int top = bot + 2;
+  int temp;
+  if (points->m[1][b] > points->m[1][m]) {
+	temp = bot;
+	bot = mid;
+	mid = temp;
+  }
+  if (points->m[1][b] > points->m[1][t]) {
+	temp = bot;
+	bot = top;
+	top = temp;
+  }
+  if (points->m[1][m] > points->m[1][t]) {
+	temp = mid;
+	mid = top;
+	top = temp;
+  }
   float xt;
   float yt;
   float zt;
@@ -73,18 +91,18 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
   float yb;
   float zb;
 
-  int x0 = points->m[0][i];
-  int y0 = points->m[1][i];
-  int z0 = points->m[2][i];
+  xb = points->m[0][bot];
+  yb = points->m[1][bot];
+  zb = points->m[2][bot];
   
-  int x1 = points->m[0][i + 1];
-  int y1 = points->m[1][i + 1];
-  int z1 = points->m[2][i + 1];
+  xm = points->m[0][mid];
+  ym = points->m[1][mid];
+  zm = points->m[2][mid];
 
-  int x2 = points->m[0][i + 2];
-  int y2 = points->m[1][i + 2];
-  int z2 = points->m[2][i + 2];
-
+  xt = points->m[0][top];
+  yt = points->m[1][top];
+  zt = points->m[2][top];
+  /*
   if (y0 == max(y0, y1, y2)) {
     yt = y0;
     xt = x0;
@@ -180,6 +198,28 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zbu ) {
 		 (i - ym) * d_z2b + zm,
 		 s, zbu, c);
     }
+  }
+  */
+  float x0 = xb;
+  float x1 = x0;
+  float y;
+  float z0 = zb;
+  float z1 = z0;
+  for (y = yb; y < ym; y ++) {
+	draw_line(x0, y, z0, x1, y, z1, s, zbuf, c);
+	x0 += (xt - xb) / (yt - yb);
+	z0 += (zt - zb) / (yt - yb);
+	x1 += (xm - xb) / (ym - yb);
+	z1 += (zm - zb) / (ym - yb);
+  }
+  x1 = xm;
+  z1 = zm;
+  for (y = ym; y < yt; y ++) {
+	draw_line(x0, y, z0, x1, y, z1, s, zbuf, c);
+	x0 += (xt - xb) / (yt - yb);
+	z0 += (zt - zb) / (yt - yb);
+	x1 += (xt - xm) / (yt - ym);
+	z1 += (zt - zm) / (yt - ym);
   }
 }
 
