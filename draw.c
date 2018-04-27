@@ -85,7 +85,98 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
   int y2 = points->m[1][i * 3 + 2];
   int z2 = points->m[2][i * 3 + 2];
 
+  if (y0 == max(y0, y1, y2)) {
+    yt = y0;
+    xt = x0;
+    zt = z0;
+  }
+
+  if (y1 == max(y0, y1, y2)){
+    yt = y1;
+    xt = x1;
+    zt = z1;
+  }
+
+  if (y2 == max(y0, y1, y2)){
+    yt = y2;
+    xt = x2;
+    zt = z2;
+  }
+
+  if (y0 == min(y0, y1, y2)) {
+    yb = y0;
+    xb = x0;
+    zb = z0;
+  }
+
+  if (y1 == min(y0, y1, y2)){
+    yb = y1;
+    xb = x1;
+    zb = z1;
+  }
+
+  if (y2 == min(y0, y1, y2)){
+    yb = y2;
+    xb = x2;
+    zb = z2;
+  }
+
+  xm = x0 + x1 + x2 - xb - xt;
+  ym = y0 + y1 + y2 - yb - yt;
+  zm = z0 + z1 + z2 - zb - zt;
   
+
+  float dx1, dx2a, dx2b;
+  float dz1, dz2a, dz2b;
+  if(yt - yb != 0){
+    dx1 = (xt - xb) / (yt - yb);
+    dz1 = (zt - zb) / (yt - yb);
+  }
+  else{
+    dx1 = 19000000;
+    dz1 = 1000000;
+  }
+  
+  if(ym - yb != 0){
+    dx2a = (xm - xb) / (ym - yb);
+    dz2a = (zm - zb) / (ym - yb);
+  }
+  else{
+    dx2a = 10000000;
+    dz2a = 10000000;
+  }
+  
+  if(yt - ym != 0){
+    dx2b = (xt - xm) / (yt - ym);
+    dz2b = (zt - zm) / (yt - ym);
+  }
+  else{
+    dx2b = 100000000;
+    dz2b = 10000000;
+  }
+  int j;
+  for(j = yb; j < yt; j++){
+
+    
+    if(i < ym){
+      draw_line( (i - yb) * dx1 + xb,
+		 i,
+		 (i - yb) * dz1 + zb,
+		 (i - yb) * dx2a + xb,
+		 i,
+		 (i - yb) * dz2a + zb,
+		 s, zb, c);
+    }
+    else{
+      draw_line( (i - yb) * dx1 + xb,
+		 i,
+		 (i - yb) * dz1 + zb,
+		 (i - ym) * dx2b + xm,
+		 i,
+		 (i - ym) * dz2b + zm,
+		 s, zb, c);
+    }
+  }
 }
 
 /*======== void add_polygon() ==========
